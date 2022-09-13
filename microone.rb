@@ -3,6 +3,7 @@
   require 'nokogiri'
   require "net/https"
   require 'uri'
+  require "sinatra"
 
   def mygropdata word # отправляю имя группы полуаю данные о ней
     p myurl = "https://t.me/#{word.delete "@" }"
@@ -51,7 +52,6 @@ def datapars? myurl    # если тру то пост не нашли
   doc.xpath(".//*[@class='tgme_widget_message_error']//text()").count > 0 ? true : false
 end
 
-require "sinatra"
 
 get "/*" do
    p params[:splat].first
