@@ -68,16 +68,18 @@ get '/group/:id/' do
   #p=Mywork.mygropdata(group)
 
   temp=p['extra'].match(/([0-9 ]*)/)
-  
+
   p['extra']=temp[1].gsub!(/\s+/, '').to_i
   # колличество пользователей умножаем на 50, далее в тесте на группы подберем коэфициент
   i=10      # ограничу поиск размера группы 15 запросами
-  poznow=p['extra']*30
+  poznow=p['extra']*50
   left=0
   right=poznow
   stop=0
   t={}
   t['status']=[]
+  t['status2']=0
+  t['status3']=0
   t['messages']=[]
   t['poznow']=[]
   t['poznow'] << poznow
@@ -96,6 +98,7 @@ get '/group/:id/' do
         # p "--------------------ERROR FIND false------start=   #{myurl}   povtor=  #{masurl}       -----------------------------------"
       end
       t['status'] << "нужно меньше" #  получили сообщения пост не найден
+      t['status2'] +=1
       stop=poznow    # позицию в значении stop не пересекаем, дальше ничего нет
       poznow=left+(right-left)/2
       right=poznow
@@ -103,6 +106,7 @@ get '/group/:id/' do
     else
       t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
       t['status'] << "нужно больше"
+      t['status3'] +=1
       left=poznow
       if stop <= poznow*2 && stop!=0
         poznow=poznow+(stop-poznow)/2
@@ -116,6 +120,7 @@ get '/group/:id/' do
     t['poznow'] << poznow
     i-=1
   end
+  #p "--------#{left}-----------"
   #p "--------#{t.inspect}-----------"
-  "{data:#{left}, test:1}"
+  "{data:#{left}, count:#{p['extra']}, work1:#{t['status2']},work2:#{t['status3']}}"
 end
