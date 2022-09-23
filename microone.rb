@@ -97,7 +97,7 @@ get '/group/:id/' do
         #else
         # p "--------------------ERROR FIND false------start=   #{myurl}   povtor=  #{masurl}       -----------------------------------"
       end
-      t['status'] << "нужно меньше" #  получили сообщения пост не найден
+      p t['status'] << "нужно меньше" #  получили сообщения пост не найден
       t['status2'] +=1
       stop=poznow    # позицию в значении stop не пересекаем, дальше ничего нет
       poznow=left+(right-left)/2
@@ -105,7 +105,7 @@ get '/group/:id/' do
       t['messages'] << ""
     else
       t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
-      t['status'] << "нужно больше"
+      p t['status'] << "нужно больше"
       t['status3'] +=1
       left=poznow
       if stop <= poznow*2 && stop!=0
@@ -122,5 +122,5 @@ get '/group/:id/' do
   end
   #p "--------#{left}-----------"
   #p "--------#{t.inspect}-----------"
-  "{data:#{left}, count:#{p['extra']}, work1:#{t['status2']},work2:#{t['status3']}}"
+  "{\"data\":\"#{left}\", \"count\":\"#{p['extra']}\", \"work1\":\"#{t['status2']}\",\"work2\":\"#{t['status3']}\"}"
 end
