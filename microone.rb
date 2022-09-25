@@ -70,6 +70,12 @@ get '/group/:id/' do
   temp=p['extra'].match(/([0-9 ]*)/)
 
   p['extra']=temp[1].gsub!(/\s+/, '').to_i
+if p['extra'] == 0
+"{\"data\":\"0\", \"count\":\"0\", \"work1\":\"0\",\"work2\":\"0\",\"flag\":\"-1\"}"
+else
+
+
+
   # колличество пользователей умножаем на 50, далее в тесте на группы подберем коэфициент
   i=10      # ограничу поиск размера группы 15 запросами
   poznow=p['extra']*50
@@ -87,7 +93,7 @@ get '/group/:id/' do
   masrand=[rand(1...100),rand(100...200),rand(400...700)]
   myurllam = lambda{|x,y| "https://t.me/#{x}/#{y}?embed=1"}
   while  i > 0 do
-    myurl = "https://t.me/#{group}/#{poznow}?embed=1"
+    p myurl = "https://t.me/#{group}/#{poznow}?embed=1"
     masurl = myurllam.call(group,(poznow+masrand[2]))
     doc=datapars myurl
     if datapars?(myurl)
@@ -123,4 +129,5 @@ get '/group/:id/' do
   #p "--------#{left}-----------"
   #p "--------#{t.inspect}-----------"
   "{\"data\":\"#{left}\", \"count\":\"#{p['extra']}\", \"work1\":\"#{t['status2']}\",\"work2\":\"#{t['status3']}\"}"
+end
 end
