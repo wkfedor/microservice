@@ -51,7 +51,7 @@ def datapars? myurl    # если тру то пост не нашли
   doc.xpath(".//*[@class='tgme_widget_message_error']//text()").count > 0 ? true : false
 end
 
-
+# поиск максимального значения с нуля
 get '/group/:id/' do
   #p "--------------------------1"
   #p params[:id]
@@ -59,7 +59,6 @@ get '/group/:id/' do
   #p "--------------------------2"
   #group=params[:splat].first
   group=params[:id]
-
   #p "--------------------------3"
   p=mygropdata(group)
   #p "--------------------------4"
@@ -73,9 +72,6 @@ get '/group/:id/' do
 if p['extra'] == 0
 "{\"data\":\"0\", \"count\":\"0\", \"work1\":\"0\",\"work2\":\"0\",\"flag\":\"-1\"}"
 else
-
-
-
   # колличество пользователей умножаем на 50, далее в тесте на группы подберем коэфициент
   i=10      # ограничу поиск размера группы 15 запросами
   poznow=p['extra']*10
@@ -130,4 +126,9 @@ else
   #p "--------#{t.inspect}-----------"
   "{\"data\":\"#{left}\", \"count\":\"#{p['extra']}\", \"work1\":\"#{t['status2']}\",\"work2\":\"#{t['status3']}\"}"
 end
+end
+
+# поиск максимального значения не с нуля
+get '/maxgroup/:id/:nummax/' do
+  "{\"data\":\"0\"}"
 end
