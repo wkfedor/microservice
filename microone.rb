@@ -140,6 +140,8 @@ get '/maxgroup/:id/:nummax/:countuser/' do
      else
          doc = datapars myurl
          t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
+         t['messages'] << doc.xpath(".//*[@class='message_media_not_supported_label'][1]//text()").text
+         p t.inspect
          # message_media_not_supported_wrap # так же обработать событие, откройте сообщение в телеграмме.
          poznow*=2
      end
