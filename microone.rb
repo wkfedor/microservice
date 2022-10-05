@@ -137,9 +137,11 @@ get '/maxgroup/:id/:nummax/:countuser/' do
     p myurl = "https://t.me/#{group}/#{poznow}?embed=1"
      if datapars?(myurl)
        t['messages'] << "пост не нашли"
-       else
+     else
          doc = datapars myurl
          t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
+         # message_media_not_supported_wrap # так же обработать событие, откройте сообщение в телеграмме.
+         poznow*=2
      end
 
     i -= 1
