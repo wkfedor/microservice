@@ -118,8 +118,9 @@ get '/maxgroup/:id/:nummax/:countuser/' do
   group = params[:id]
   nummax = params[:nummax]
   countuser = params[:countuser]
-  t={}
-  t['messages']=[]
+  t = {}
+  t['messages'] = []
+  t['time'] = []
   # рассмотрим 2 случая, нормальный и когда данные пришли с косяком
   # http://127.0.0.1:4567/maxgroup/logistics1520com/254955/8557/            # номральный вариант    12
   # http://127.0.0.1:4567/maxgroup/logistics1520com/79833/8557/             # косячный              11
@@ -132,22 +133,33 @@ get '/maxgroup/:id/:nummax/:countuser/' do
   # если больше и разница в 1 день то log*2, и как было выше, но 4 попытки
   log = Math.log(nummax == 0 ? 1 : nummax.to_i).floor # логарифм от колличества сообщений переданные в урле
   poznow = nummax.to_i + log
-  i = 1 # ограничу поиск размера группы 4 запросами
-  while i > 0
+  i = 0 # ограничу поиск размера группы 4 запросами
+
+  # t['messages'] << doc.xpath(".//*[@class='message_media_not_supported_label'][1]//text()").count > 0 ? true : false
+
+  while i < 2
     p myurl = "https://t.me/#{group}/#{poznow}?embed=1"
-     if datapars?(myurl)
-       t['messages'] << "пост не нашли"
-     else
-         doc = datapars myurl
-         t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
-         t['messages'] << doc.xpath(".//*[@class='message_media_not_supported_label'][1]//text()").text
-         p t.inspect
-         # message_media_not_supported_wrap # так же обработать событие, откройте сообщение в телеграмме.
-         poznow*=2
-     end
+    if datapars?(myurl)
+      t['messages'] << 'пост не нашли'
+    else
+      doc = datapars myurl
+      if doc.xpath(".//*[@class='message_media_not_supported_label'][1]//text()").count > 0 ? true : false
+        t['messages'] << 'Please open Telegram to view this post'
+        break
+      else
+        t['messages'] << doc.xpath(".//*[@class='tgme_widget_message_text js-message_text']//text()").text
+        t['time'] << Time.parse(doc.xpath(".//*[@class='tgme_widget_message_date']//text()").text)
 
-    i -= 1
+      end
+
+      # message_media_not_supported_wrap # так же обработать событие, откройте сообщение в телеграмме.
+      poznow += log
+    end
+    i += 1
+
+    temp = (t['time'][1] - t['time'][0]) / (3600 * 24) if i == 2 # на второй итерации цыкла сравниваем первую найденную дату со второй
+
   end
-
-  "{\"data\":\"#{t.inspect}\", \"group\":\"#{group}\", \"nummax\":\"#{nummax}\", \"countuser\":\"#{countuser}\"}"
+  p t.inspect
+  "{\"data\":\"#{t.inspect}\", \"group\":\"#{group}\", \"nummax\":\"#{nummax}\", \"countuser\":\"#{countuser}\", \"time\":\"#{temp}\"}"
 end
