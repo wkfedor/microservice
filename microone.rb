@@ -57,7 +57,13 @@ get '/group/:id/' do
 
   p['extra'] = temp[1].gsub!(/\s+/, '').to_i
   if p['extra'] == 0
-    '{"data":"0", "count":"0", "work1":"0","work2":"0","flag":"-1"}'
+    if p['title'].length ==0  && p['description'].include?("If you have Telegram")
+      '{"data":"0", "count":"0", "work1":"0","work2":"0","flag": "-2" }'
+      # несуществует
+    else
+      '{"data":"0", "count":"0", "work1":"0","work2":"0","flag": "-1" }'
+      #из канала перевели в пользователя
+    end
   else
     # колличество пользователей умножаем на 50, далее в тесте на группы подберем коэфициент
     i = 10 # ограничу поиск размера группы 15 запросами
